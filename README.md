@@ -1,70 +1,43 @@
-# Getting Started with Create React App
+<h1>Stock Daily App</h1>
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+<h2>Description</h2>
+StockDaily is a client-side web application to allow users to view and analyse data available from the online APIs. StockDialy consists of home page, stock page, and price page. 
+The home page consists of an introduction and the user can navigate to stock page by clicking the stock info button where they can see the 100 NasDaQ companies stock information. The user can go to the stock page by clicking the stocks link in the navbar as well. The user can search for the company name through the full name or symbol in the search button which will filter the companies from all the companies in the table. 
+The user can also view chart of historical data of high and low stock price of all the companies from the table throughout the year of 2018. This gives the full view of when the stock price was high and when it was low of the given company. Modules such as Chart Js, Bootstrap, React Bootstrap, Ag- Grid Community to make the app more informative and presentable. <br />
 
-## Available Scripts
 
-In the project directory, you can run:
+<h2>Tools and Modules used</h2>
 
-### `npm start`
+- <b> Tools: React.js</b> 
+- <b> Modules: Ag-grid-React, React Bootstrap, Chart JS
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+<h2>APIs used</h2>
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- <b>FMP API</b> 
+- <b>Alpha Vantage</b>
 
-### `npm test`
+<h2>Program walk-through:</h2>
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+<p align="center">
+Main page: <br/>
+<img src="https://github.com/user-attachments/assets/e5a98804-0561-4587-a690-ccad1a52c6dc" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+<br />
+<br />
+View list of Stocks:  <br/>
+<img src="https://github.com/user-attachments/assets/01e57e9c-0d57-45f8-ada3-afb693214f9e" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+<br />
+<br />
+Search Stocks: <br/>
+<img src="https://github.com/user-attachments/assets/d75c1a1f-a371-4827-99f7-87fb969d2671" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+<br />
+<br />
+Confirm your selection:  <br/>
+<img src="https://i.imgur.com/cdFHBiU.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+<br />
+<br />
+View Stocks Description and Historical Data:  <br/>
+<img src="https://github.com/user-attachments/assets/d616a328-af42-4c15-b146-2ef52b2d1dc0" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+<br />
+<br />
+</p>
 
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
