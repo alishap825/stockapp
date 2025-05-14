@@ -18,32 +18,31 @@ import {
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
+// Move fetchWithRetry OUTSIDE the component to avoid redefinition on every render
+function fetchWithRetry(url, retries = 3, delay = 1000) {
+  return fetch(url)
+    .then(response => {
+      if (!response.ok) {
+        if (response.status === 429 && retries > 0) {
+          return new Promise(resolve => setTimeout(resolve, delay)).then(() =>
+            fetchWithRetry(url, retries - 1, delay * 2)
+          );
+        }
+        throw new Error(`API error: ${response.status}`);
+      }
+      return response.json();
+    });
+}
+
 export default function Price() {
   const { symbol = "" } = useParams();
   const chartRef = useRef(null);
   const FMP_API_KEY = process.env.REACT_APP_API_KEY_2;
   const historicalChartUrl = `https://financialmodelingprep.com/api/v3/historical-price-full/${symbol}?apikey=${FMP_API_KEY}`;
 
-  // Manage API state
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
-  // Function to fetch data with retry logic
-  function fetchWithRetry(url, retries = 3, delay = 1000) {
-    return fetch(url)
-      .then(response => {
-        if (!response.ok) {
-          if (response.status === 429 && retries > 0) {
-            return new Promise(resolve => setTimeout(resolve, delay)).then(() =>
-              fetchWithRetry(url, retries - 1, delay * 2)
-            );
-          }
-          throw new Error(`API error: ${response.status}`);
-        }
-        return response.json();
-      });
-  }
 
   useEffect(() => {
     if (symbol) {
@@ -58,7 +57,7 @@ export default function Price() {
           setLoading(false);
         });
     }
-  }, [symbol]);
+  }, [symbol, historicalChartUrl]);
 
   const options = {
     responsive: true,
