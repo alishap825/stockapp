@@ -3,7 +3,7 @@ import Container from 'react-bootstrap/Container';
 
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
-import tag from "../image/stockimg.png";
+import tag from "../image/logo.png";
 
 import { LinkContainer } from 'react-router-bootstrap'
 
@@ -11,11 +11,9 @@ function NavLayout() {
   return (
     <Navbar bg="dark" expand="lg">
       <Container fluid>
-      <Navbar.Brand  to="/">
-          <img src={tag} width="50" height="50" alt="Stocks"
-          style={{
-            borderRadius: "50%",
-          }} />
+      <Navbar.Brand  to="/" style={{ marginRight: '30px' }}>
+          <img src={tag} width="40" height="40" alt="Stocks"
+           />
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="navbarScroll" />
         <Navbar.Collapse id="navbarScroll">

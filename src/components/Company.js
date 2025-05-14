@@ -4,8 +4,8 @@ import Error from "./Error";
 import { Container, Row, Col } from "react-bootstrap";
 
 export default function CompanyInfo(symbol) {
-  const FMP_API_KEY = `8KVX9RRKBNGTO09C`;
-  const companyInfoURL = `https://www.alphavantage.co/query?function=OVERVIEW&symbol=${symbol.data}&apikey=${FMP_API_KEY}`;
+  const AV_API_KEY = process.env.REACT_APP_API_KEY_1;
+  const companyInfoURL = `https://www.alphavantage.co/query?function=OVERVIEW&symbol=${symbol.data}&apikey=${AV_API_KEY}`;
   const { loading, data, error } = useAPI(companyInfoURL);
 
   if (loading) {

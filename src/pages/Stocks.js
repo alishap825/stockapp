@@ -9,8 +9,8 @@ import StockTable from "../components/StockTable";
 import { Container } from "react-bootstrap";
   export default function Stocks() {
 
-    const FMP_API_KEY = `e25ee6f07a20300466042dc2892848eb`;
-    const stockURL = `https://financialmodelingprep.com/api/v3/nasdaq_constituent?apikey=${FMP_API_KEY}`;
+    const FMPTWO_API_KEY= process.env.REACT_APP_API_KEY_2;
+    const stockURL = `https://financialmodelingprep.com/api/v3/nasdaq_constituent?apikey=${FMPTWO_API_KEY}`;
     let { loading, data, error } = useAPI(stockURL);
   
     if (loading) {

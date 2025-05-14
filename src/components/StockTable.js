@@ -91,6 +91,9 @@ export default function StockTable({ data }) {
               rowData={searchData}
               pagination={true}
               rowSelection="single"
+              suppressColumnVirtualisation={true}
+              suppressRowVirtualisation={true}
+              domLayout="autoHeight"
               defaultColDef={{
                 flex: 1,
                 resizable: true,
