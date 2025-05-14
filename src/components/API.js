@@ -24,7 +24,7 @@ export default function useAPI(endPoint, ...props) {
         setLoading(false);
       }
     })();
-  }, []);
+  }, [endPoint, props]);
 
   return {
     loading,

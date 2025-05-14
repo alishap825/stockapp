@@ -9,17 +9,12 @@ import { Container, Row, Col } from "react-bootstrap";
 import { SearchBar, searchQueryFilter } from "./../components/SearchBar";
 
 export default function StockTable({ data }) {
-  const [dataUpdate, setDataUpdate] = useState();
   const [searchResult, setSearchResult] = useState("");
   const [searchData, setSearchData] = useState([]);
   const [rowData, setRowData] = useState([]);
   const [coloumnData, setColumnData] = useState([]);
   const [tableLoading, setTableLoading] = useState(true);
 
-  // check for updated data then set rerender
-  setTimeout(() => {
-    setDataUpdate(data);
-  }, 100);
 
 
   useEffect(() => {
@@ -36,7 +31,7 @@ export default function StockTable({ data }) {
         console.log(`Stock Table still being constucted.`);
       }
     })();
-  }, [dataUpdate, searchResult]);
+  }, [data]);
 
   useEffect(() => {
     (async () => {
@@ -44,7 +39,7 @@ export default function StockTable({ data }) {
         await searchQueryFilter(rowData, searchResult)
       );
     })();
-  }, [searchResult]);
+  }, [rowData, searchResult]);
 
   if (tableLoading) {
     return (
