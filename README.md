@@ -16,24 +16,6 @@ The user can also view chart of historical data of high and low stock prices of 
 - <b>FMP API</b> 
 - <b>Alpha Vantage</b>
 
-<h2>Program walk-through:</h2>
 
-<p align="center">
-Main page: <br/>
-<img src="https://github.com/user-attachments/assets/e5a98804-0561-4587-a690-ccad1a52c6dc" height="80%" width="80%" alt="Stock Data"/>
-<br />
-<br />
-View list of Stocks:  <br/>
-<img src="https://github.com/user-attachments/assets/01e57e9c-0d57-45f8-ada3-afb693214f9e" height="80%" width="80%" alt="Stock Data"/>
-<br />
-<br />
-Search Stocks: <br/>
-<img src="https://github.com/user-attachments/assets/d75c1a1f-a371-4827-99f7-87fb969d2671" height="80%" width="80%" alt="Stock Data"/>
-<br />
-<br />
-View Stocks Description and Historical Data:  <br/>
-<img src="https://github.com/user-attachments/assets/d616a328-af42-4c15-b146-2ef52b2d1dc0" height="80%" width="80%" alt="Stock Data"/>
-<br />
-<br />
-</p>
+
 
