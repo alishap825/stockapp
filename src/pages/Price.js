@@ -16,9 +16,10 @@ import {
   Legend,
 } from "chart.js";
 
+// Register Chart.js modules
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
-// Move fetchWithRetry OUTSIDE the component to avoid redefinition on every render
+// Fetch with retry logic (for handling rate limits or transient failures)
 function fetchWithRetry(url, retries = 3, delay = 1000) {
   return fetch(url)
     .then(response => {
@@ -38,59 +39,63 @@ export default function Price() {
   const { symbol = "" } = useParams();
   const chartRef = useRef(null);
   const FMP_API_KEY = process.env.REACT_APP_API_KEY_2;
-  const historicalChartUrl = `https://financialmodelingprep.com/api/v3/historical-price-full/${symbol}?apikey=${FMP_API_KEY}`;
-
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (symbol) {
-      setLoading(true);
-      fetchWithRetry(historicalChartUrl)
-        .then(result => {
-          setData(result);
-          setLoading(false);
-        })
-        .catch(err => {
-          setError(err.message);
-          setLoading(false);
-        });
+    if (!symbol || !FMP_API_KEY) {
+      setError("Missing symbol or API key.");
+      setLoading(false);
+      return;
     }
-  }, [symbol, historicalChartUrl]);
+
+    const historicalChartUrl = `https://financialmodelingprep.com/api/v3/historical-price-full/${symbol}?apikey=${FMP_API_KEY}`;
+    setLoading(true);
+    fetchWithRetry(historicalChartUrl)
+      .then(result => {
+        setData(result);
+        setLoading(false);
+      })
+      .catch(err => {
+        setError(err.message);
+        setLoading(false);
+      });
+  }, [symbol, FMP_API_KEY]);
 
   const options = {
     responsive: true,
     aspectRatio: 2,
     plugins: {
       legend: { position: "top" },
-      title: { display: true, text: "Historical Data" },
+      title: { display: true, text: "Historical Price Data (Last 50 Days)" },
     },
   };
 
   let _data = { labels: [], datasets: [] };
 
   if (data?.historical) {
-    const historicalData = data.historical.slice(-50);
+    const historicalData = data.historical.slice(-50).reverse(); // reverse to show oldest first
     const labels = historicalData.map(x => x.date);
-    let mainData = {};
-
-    historicalData.forEach(x => {
-      mainData[x.date] = { low: x.low, high: x.high };
-    });
+    const lows = historicalData.map(x => x.low);
+    const highs = historicalData.map(x => x.high);
 
     _data = {
       labels,
       datasets: [
         {
           label: "Low",
-          data: labels.map(label => mainData[label]?.low || 0),
-          backgroundColor: "rgba(255, 99, 132, 0.5)",
+          data: lows,
+          borderColor: "rgba(255, 99, 132, 1)",
+          backgroundColor: "rgba(255, 99, 132, 0.2)",
+          fill: true,
         },
         {
           label: "High",
-          data: labels.map(label => mainData[label]?.high || 0),
-          backgroundColor: "rgba(0, 255, 0, 0.5)",
+          data: highs,
+          borderColor: "rgba(0, 255, 0, 1)",
+          backgroundColor: "rgba(0, 255, 0, 0.2)",
+          fill: true,
         },
       ],
     };
