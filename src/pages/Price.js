@@ -19,12 +19,12 @@ import {
 // Register Chart.js modules
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
-// Fetch with retry logic (for handling rate limits or transient failures)
+// Function to fetch API with retry logic for 429 errors
 function fetchWithRetry(url, retries = 3, delay = 1000) {
   return fetch(url)
     .then(response => {
       if (!response.ok) {
-        if (response.status === 429 && retries > 0) {
+        if ((response.status === 429 || response.status >= 500) && retries > 0) {
           return new Promise(resolve => setTimeout(resolve, delay)).then(() =>
             fetchWithRetry(url, retries - 1, delay * 2)
           );
@@ -32,6 +32,14 @@ function fetchWithRetry(url, retries = 3, delay = 1000) {
         throw new Error(`API error: ${response.status}`);
       }
       return response.json();
+    })
+    .catch(error => {
+      if (retries > 0) {
+        return new Promise(resolve => setTimeout(resolve, delay)).then(() =>
+          fetchWithRetry(url, retries - 1, delay * 2)
+        );
+      }
+      throw error;
     });
 }
 
@@ -44,16 +52,25 @@ export default function Price() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (!symbol || !FMP_API_KEY) {
-      setError("Missing symbol or API key.");
+    if (!symbol) {
+      setError("Stock symbol is required.");
+      setLoading(false);
+      return;
+    }
+    if (!FMP_API_KEY) {
+      setError("API key missing. Check environment variables.");
       setLoading(false);
       return;
     }
 
     const historicalChartUrl = `https://financialmodelingprep.com/api/v3/historical-price-full/${symbol}?apikey=${FMP_API_KEY}`;
     setLoading(true);
+
     fetchWithRetry(historicalChartUrl)
       .then(result => {
+        if (!result?.historical || result.historical.length === 0) {
+          throw new Error(`No historical data found for "${symbol}". (404)`);
+        }
         setData(result);
         setLoading(false);
       })
@@ -68,14 +85,14 @@ export default function Price() {
     aspectRatio: 2,
     plugins: {
       legend: { position: "top" },
-      title: { display: true, text: "Historical Price Data (Last 50 Days)" },
+      title: { display: true, text: `Historical Price Data for ${symbol} (Last 50 Days)` },
     },
   };
 
   let _data = { labels: [], datasets: [] };
 
   if (data?.historical) {
-    const historicalData = data.historical.slice(-50).reverse(); // reverse to show oldest first
+    const historicalData = data.historical.slice(-50).reverse();
     const labels = historicalData.map(x => x.date);
     const lows = historicalData.map(x => x.low);
     const highs = historicalData.map(x => x.high);
