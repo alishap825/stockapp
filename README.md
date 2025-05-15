@@ -16,6 +16,6 @@ The user can also view chart of historical data of high and low stock prices of 
 - <b>FMP API</b> 
 - <b>Alpha Vantage</b>
 
-Check it out here - https://stockdaily.netlify.app/
+Check out the project here - https://stockdaily.netlify.app/
 
 
