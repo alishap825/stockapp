@@ -6,7 +6,7 @@ import Badge from 'react-bootstrap/Badge';
 import { useState, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { Container, Row, Col } from "react-bootstrap";
-import { SearchBar, searchQueryFilter } from "./../components/SearchBar";
+import { SearchBar } from "./../components/SearchBar";
 
 export default function StockTable({ data }) {
   const [searchQuery, setSearchQuery] = useState("");

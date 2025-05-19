@@ -1,5 +1,4 @@
 import useAPI from "./API";
-import Error from "./Error";
 import { Container, Row, Col } from "react-bootstrap";
 
 export default function CompanyInfo({ data: symbol }) {
