@@ -9,8 +9,9 @@ export default function Home() {
     <Container fluid className="vh-100" id="width" style={{ padding: 0 }}>
       <img src={bgimg} alt="banner" style={{
       width: '100%',
-      height: '400px',
+      height: 'auto',
       objectFit: 'cover',
+      maxHeight: '300px',
       display: 'block'
     }}/>
       <div className="Home">

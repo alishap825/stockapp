@@ -1,22 +1,31 @@
 import ReactLoading from "react-loading";
-import { Container } from "react-bootstrap";
+
+
 
 
 export default function LoadingSpinner() {
+  // Responsive size: smaller on mobile, larger on desktop
+  const size = window.innerWidth < 600 ? 80 : 150;
+
   return (
-    <Container alt="Loading Spinner">
-        <div style={{
-          marginLeft: "34vw",
-          marginTop: "14vw"
-        }}>
-          <ReactLoading
-            type={"spinningBubbles"}
-            color={"#7393B3"}
-            height={200}
-            width={200}
-            id="LoadingSymbol"
-            />
-            </div>
-    </Container>
+    <div
+      className="spinner-center"
+      style={{
+        minHeight: "60vh",
+        width: "100vw",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: 0,
+      }}
+    >
+      <ReactLoading
+        type="spinningBubbles"
+        color="#7393B3"
+        height={size}
+        width={size}
+        id="LoadingSymbol"
+      />
+    </div>
   );
 }

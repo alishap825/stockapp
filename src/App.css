@@ -13,6 +13,11 @@
   }
 }
 
+@media (min-width: 768px) {
+  .bgimg {
+    max-height: 400px;
+  }
+}
 .App-header {
   background-color: #282c34;
   min-height: 100vh;
@@ -38,4 +43,29 @@
 }
 .background{
   color:lightsteelblue;
+}
+.navbar-toggler {
+  border: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}
+.row>* {
+    flex-shrink: 0;
+    width: 100%;
+    max-width: 100%;
+    padding-right: calc(var(--bs-gutter-x) * .5);
+    padding-left: calc(var(--bs-gutter-x) * 1);
+    margin-top: var(--bs-gutter-y);
+}
+.CompanyInfo .container {
+  max-width: min(700px, 95vw);
+  width: 100%;
+  margin: 0 auto;
+  padding: 32px 8px;
+  background: transparent;
+  text-align: center;
+  word-break: break-word;
+}
+.CompanyInfo h1 {
+  font-size: clamp(1.5rem, 5vw, 2.5rem);
 }

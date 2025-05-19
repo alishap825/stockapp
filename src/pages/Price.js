@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import { Container, Row } from "react-bootstrap";
 import { Line } from "react-chartjs-2";
-import CompanyDetails from "../components/Company.js";
+import CompanyInfo from "../components/Company.js";
 import Error from "../components/Error.js";
 import LoadingSpinner from "../components/LoadingSymbol.js";
 import {
@@ -14,33 +14,56 @@ import {
   Title,
   Tooltip,
   Legend,
+  Filler,
 } from "chart.js";
 
 // Register Chart.js modules
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler);
+
+// Helper: Cache API responses in localStorage for 10 minutes
+function getCachedData(key) {
+  const cached = localStorage.getItem(key);
+  if (!cached) return null;
+  try {
+    const { data, timestamp } = JSON.parse(cached);
+    if (Date.now() - timestamp < 10 * 60 * 1000) { // 10 minutes
+      return data;
+    }
+    return null;
+  } catch {
+    return null;
+  }
+}
+
+function setCachedData(key, data) {
+  localStorage.setItem(key, JSON.stringify({ data, timestamp: Date.now() }));
+}
 
 // Function to fetch API with retry logic for 429 errors
-function fetchWithRetry(url, retries = 3, delay = 1000) {
-  return fetch(url)
-    .then(response => {
+async function fetchWithRetryAndCache(url, cacheKey, retries = 3, delay = 1000) {
+  // Try cache first
+  const cached = getCachedData(cacheKey);
+  if (cached) return cached;
+
+  for (let i = 0; i <= retries; i++) {
+    try {
+      const response = await fetch(url);
       if (!response.ok) {
-        if ((response.status === 429 || response.status >= 500) && retries > 0) {
-          return new Promise(resolve => setTimeout(resolve, delay)).then(() =>
-            fetchWithRetry(url, retries - 1, delay * 2)
-          );
+        if ((response.status === 429 || response.status >= 500) && i < retries) {
+          await new Promise(res => setTimeout(res, delay * (i + 1)));
+          continue;
         }
         throw new Error(`API error: ${response.status}`);
       }
-      return response.json();
-    })
-    .catch(error => {
-      if (retries > 0) {
-        return new Promise(resolve => setTimeout(resolve, delay)).then(() =>
-          fetchWithRetry(url, retries - 1, delay * 2)
-        );
-      }
-      throw error;
-    });
+      const data = await response.json();
+      setCachedData(cacheKey, data);
+      return data;
+    } catch (error) {
+      if (i === retries) throw error;
+      await new Promise(res => setTimeout(res, delay * (i + 1)));
+    }
+  }
+  throw new Error("API failed after retries.");
 }
 
 export default function Price() {
@@ -64,9 +87,12 @@ export default function Price() {
     }
 
     const historicalChartUrl = `https://financialmodelingprep.com/api/v3/historical-price-full/${symbol}?apikey=${FMP_API_KEY}`;
-    setLoading(true);
+    const cacheKey = `price-history-${symbol}`;
 
-    fetchWithRetry(historicalChartUrl)
+    setLoading(true);
+    setError(null);
+
+    fetchWithRetryAndCache(historicalChartUrl, cacheKey)
       .then(result => {
         if (!result?.historical || result.historical.length === 0) {
           throw new Error(`No historical data found for "${symbol}". (404)`);
@@ -129,7 +155,7 @@ export default function Price() {
     <Container fluid className="vh-100" id="background">
       <div className="StockHistory">
         <Row>
-          <CompanyDetails data={symbol} />
+          <CompanyInfo data={symbol} />
         </Row>
         <Row id="marginTop">
           <Line ref={chartRef} options={options} data={_data} style={{ marginInline: "auto" }} />

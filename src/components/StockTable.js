@@ -3,43 +3,56 @@ import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Badge from 'react-bootstrap/Badge';
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { Container, Row, Col } from "react-bootstrap";
 import { SearchBar, searchQueryFilter } from "./../components/SearchBar";
 
 export default function StockTable({ data }) {
-  const [searchResult, setSearchResult] = useState("");
-  const [searchData, setSearchData] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
   const [rowData, setRowData] = useState([]);
-  const [coloumnData, setColumnData] = useState([]);
   const [tableLoading, setTableLoading] = useState(true);
 
-
-
   useEffect(() => {
-    (async () => {
-      try {
-        console.log(`Processing: ${JSON.stringify(data)}`)
-        let rows = await getRowData(data);
-        setRowData(rows);
-        setSearchData(rows);
-        setColumnData(await getTableColumnsData(data));
-        setTableLoading(false);
-      } catch (e) {
-        console.log(`Caught error: ${e}`);
-        console.log(`Stock Table still being constucted.`);
-      }
-    })();
+    // If data is undefined or not an array, avoid setting state
+    if (!Array.isArray(data)) {
+      setRowData([]);
+      setTableLoading(false);
+      return;
+    }
+    setRowData(getRowData(data));
+    setTableLoading(false);
   }, [data]);
 
-  useEffect(() => {
-    (async () => {
-      setSearchData(
-        await searchQueryFilter(rowData, searchResult)
-      );
-    })();
-  }, [rowData, searchResult]);
+  // Memoize columns so they don't change on every render
+  const columnDefs = useMemo(() => [
+    {
+      headerName: "Symbol",
+      field: "symbol",
+      cellRendererFramework: (params) => (
+        <Link to={`/Price/${params.value}`}>{params.value}</Link>
+      ),
+      filter: true,
+    },
+    {
+      headerName: "Name",
+      field: "name",
+      cellRendererFramework: (params) => {
+        let linkSymbol = locateSymbol(params, data);
+        return <Link to={`/Price/${linkSymbol}`}>{params.value}</Link>;
+      },
+    },
+  ], [data]);
+
+  // Filtered data using useMemo for performance
+  const searchData = useMemo(() => {
+    if (!searchQuery) return rowData;
+    return rowData.filter(
+      (r) =>
+        r.symbol.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        r.name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }, [rowData, searchQuery]);
 
   if (tableLoading) {
     return (
@@ -56,33 +69,33 @@ export default function StockTable({ data }) {
   return (
     <Container>
       <div className="StockTable" style={{
-        width: "70%", 
+        width: "70%",
         marginInline: "auto"
       }}>
-        <Row style={{ textAlign: "center", marginBlock: "20px"}}>
+        <Row style={{ textAlign: "center", marginBlock: "20px" }}>
           <Col>
             <h1>Stocks</h1>
           </Col>
-          <Col style={{marginTop: "15px"}}>
-            <SearchBar onChange={setSearchResult} />
+          <Col style={{ marginTop: "15px" }}>
+            <SearchBar value={searchQuery} onChange={setSearchQuery} />
           </Col>
         </Row>
         <Badge bg="secondary" style={{
           "padding": "10px",
           "margin-block": "10px",
-        }}>Found {rowData.length} results</Badge>
+        }}>Found {searchData.length} results</Badge>
         <Row>
           <div
             className="ag-theme-alpine"
-            style={{ 
-              height: "500px", 
-              width: "100%", 
-              marginBottom: "150px", 
-              marginInline: "auto" ,
+            style={{
+              height: "500px",
+              width: "100%",
+              marginBottom: "150px",
+              marginInline: "auto",
             }}
           >
             <AgGridReact
-              columnDefs={coloumnData}
+              columnDefs={columnDefs}
               rowData={searchData}
               pagination={true}
               rowSelection="single"
@@ -104,29 +117,8 @@ export default function StockTable({ data }) {
   );
 }
 
-async function getTableColumnsData(data) {
-  return [
-    {
-      headerName: "Symbol",
-      field: "symbol",
-      cellRendererFramework: (params) => (
-        <Link to={`/Price/${params.value}`}>{params.value}</Link>
-      ),
-      filter: true,
-    },
-    {
-      headerName: "Name",
-      field: "name",
-      cellRendererFramework: (params) => {
-        let linkSymbol = locateSymbol(params, data);
-        return <Link to={`/Price/${linkSymbol}`}>{params.value}</Link>;
-      },
-    },
-    
-  ];
-}
-
 function locateSymbol(params, data) {
+  if (!Array.isArray(data)) return "NA";
   let rowLength = data.length;
   let count = 0;
   let notFound = `NA`;
@@ -137,7 +129,8 @@ function locateSymbol(params, data) {
   return notFound;
 }
 
-async function getRowData(stockData) {
+function getRowData(stockData) {
+  if (!Array.isArray(stockData)) return [];
   return stockData.map((s) => {
     return {
       symbol: s.symbol,
