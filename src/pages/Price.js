@@ -73,7 +73,7 @@ export default function Price() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
+   
   useEffect(() => {
     if (!symbol) {
       setError("Stock symbol is required.");
@@ -85,7 +85,6 @@ export default function Price() {
       setLoading(false);
       return;
     }
-    const FMP_API_KEY = process.env.REACT_APP_API_KEY_2;
     const historicalChartUrl = `https://financialmodelingprep.com/api/v3/historical-price-full/${symbol}?apikey=${FMP_API_KEY}`;
     const cacheKey = `price-history-${symbol}`;
 
@@ -108,11 +107,14 @@ export default function Price() {
 
   const options = {
     responsive: true,
-    aspectRatio: 2,
+    maintainAspectRatio: false,
     plugins: {
       legend: { position: "top" },
       title: { display: true, text: `Historical Price Data for ${symbol} (Last 50 Days)` },
     },
+    scales: {
+      x: { ticks: { maxTicksLimit: 8, autoSkip: true } }
+    }
   };
 
   let _data = { labels: [], datasets: [] };
@@ -153,12 +155,14 @@ export default function Price() {
 
   return (
     <Container fluid className="vh-100" id="background">
-      <div className="StockHistory">
+      <div className="StockHistory" style={{ maxWidth: 900, margin: "0 auto", padding: 16 }}>
         <Row>
           <CompanyInfo data={symbol} />
         </Row>
-        <Row id="marginTop">
-          <Line ref={chartRef} options={options} data={_data} style={{ marginInline: "auto" }} />
+        <Row id="marginTop" style={{ minHeight: 350 }}>
+          <div style={{ width: "100%", height: "350px" }}>
+            <Line ref={chartRef} options={options} data={_data} />
+          </div>
         </Row>
       </div>
     </Container>
