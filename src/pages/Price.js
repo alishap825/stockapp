@@ -85,7 +85,7 @@ export default function Price() {
       setLoading(false);
       return;
     }
-
+    const FMP_API_KEY = process.env.REACT_APP_API_KEY_2;
     const historicalChartUrl = `https://financialmodelingprep.com/api/v3/historical-price-full/${symbol}?apikey=${FMP_API_KEY}`;
     const cacheKey = `price-history-${symbol}`;
 

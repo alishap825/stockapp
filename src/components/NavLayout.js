@@ -3,7 +3,7 @@ import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import tag from "../image/logo.png";
 import { LinkContainer } from 'react-router-bootstrap';
-import { FaBars } from "react-icons/fa"; // Add this import
+import { FaBars } from "react-icons/fa"; 
 
 function NavLayout() {
   return (

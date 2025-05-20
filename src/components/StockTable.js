@@ -7,6 +7,11 @@ import { useState, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { Container, Row, Col } from "react-bootstrap";
 import { SearchBar } from "./../components/SearchBar";
+import { ModuleRegistry } from '@ag-grid-community/core';
+import { SideBarModule } from '@ag-grid-enterprise/side-bar';
+
+ModuleRegistry.registerModules([SideBarModule]);
+
 
 export default function StockTable({ data }) {
   const [searchQuery, setSearchQuery] = useState("");
@@ -29,7 +34,7 @@ export default function StockTable({ data }) {
     {
       headerName: "Symbol",
       field: "symbol",
-      cellRendererFramework: (params) => (
+      cellRenderer: (params) => (
         <Link to={`/Price/${params.value}`}>{params.value}</Link>
       ),
       filter: true,
@@ -37,7 +42,7 @@ export default function StockTable({ data }) {
     {
       headerName: "Name",
       field: "name",
-      cellRendererFramework: (params) => {
+      cellRenderer: (params) => {
         let linkSymbol = locateSymbol(params, data);
         return <Link to={`/Price/${linkSymbol}`}>{params.value}</Link>;
       },
@@ -106,7 +111,6 @@ export default function StockTable({ data }) {
                 flex: 1,
                 resizable: true,
                 filter: true,
-                columnHoverHighlight: true,
               }}
               sideBar={'filters'}
             />
