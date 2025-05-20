@@ -7,11 +7,7 @@ import { useState, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { Container, Row, Col } from "react-bootstrap";
 import { SearchBar } from "./../components/SearchBar";
-import { ModuleRegistry } from '@ag-grid-community/core';
-import { SideBarModule } from '@ag-grid-enterprise/side-bar';
-
-ModuleRegistry.registerModules([SideBarModule]);
-
+import 'ag-grid-enterprise'; 
 
 export default function StockTable({ data }) {
   const [searchQuery, setSearchQuery] = useState("");
